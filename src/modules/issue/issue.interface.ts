@@ -1,7 +1,6 @@
 export interface Iissue{
     title: string,
     description: string,
-    type: string,
-    reporter_id:number,
-    status: string
+    type: "bug" | "feature_Request",
+    
 }

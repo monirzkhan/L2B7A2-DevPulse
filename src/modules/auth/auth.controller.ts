@@ -5,7 +5,7 @@ import sendResponse from "../../utility/sendResponse";
 
 const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
-    console.log(email)
+    //console.log(email)
 
     try {
         const result = await authService.loginIntoDB(req.body)

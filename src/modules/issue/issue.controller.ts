@@ -5,7 +5,14 @@ import sendResponse from "../../utility/sendResponse";
 const createIssue = async (req: Request, res: Response) => {
     console.log(req.body);
     try {
-        const result = await issueService.createIssueIntoDB(req.body)
+
+        const user = req.user;
+
+        // reporter_id from token
+        const reporter_id = user.id;
+
+        const result = await issueService.createIssueIntoDB(req.body, reporter_id);
+
         sendResponse(res, {
             statusCode: 201,
             success: true,
@@ -13,11 +20,10 @@ const createIssue = async (req: Request, res: Response) => {
             data: result.rows[0],
         });
     } catch (error: any) {
-        sendResponse(res, {
-            statusCode: 500,
+        res.status(500).json({
             success: false,
             message: error.message,
-            error: error,
+            error,
         });
 
     }

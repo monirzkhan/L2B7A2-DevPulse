@@ -5,25 +5,26 @@ import jwt from "jsonwebtoken"
 import { nextTick } from "node:process";
 import { pool } from "../db";
 import config from "../config";
+import sendResponse from "../utility/sendResponse";
 
 
-const auth = (...roles:any) => {
+const auth = (...roles: any) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        console.log("Controller",roles)
+        console.log("Controller", roles)
         try {
 
             const token = (req.headers.authorization);
             console.log(token);
             if (!token) {
-                res.status(401).json({
+                sendResponse(res, {
+                    statusCode: 401,
                     success: false,
                     message: "Unauthorized Access",
-
                 })
             }
             //jwt verify
-            const decoded = jwt.verify(token, config.jwt_secret);
-            console.log(decoded)
+            const decoded = jwt.verify(token, config.jwt_secret as string);
+            //console.log(decoded)
             // const userData = await pool.query(`
             // SELECT * from users WHERE email=$1
             // `, [decoded.email],)
@@ -52,11 +53,16 @@ const auth = (...roles:any) => {
             //     })
             // }
 
-            // req.user = decoded;
+            req.user = decoded;
             next()
         }
         catch (error) {
-            next(error)
+            sendResponse(res, {
+                statusCode: 401,
+                success: false,
+                message: "Invalid token",
+
+            });
         }
     }
 }
