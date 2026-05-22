@@ -20,16 +20,46 @@ const createIssue = async (req: Request, res: Response) => {
             data: result.rows[0],
         });
     } catch (error: any) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
             success: false,
             message: error.message,
-            error,
-        });
 
+        })
     }
-
 }
 
+const getAllIssue = async (req: Request, res: Response) => {
+
+    try {
+        const result = await issueService.getAllIssueFromDB()
+
+        if (result.rows.length === 0) {
+            sendResponse(res, {
+                statusCode: 404,
+                success: false,
+                message: "User not found",
+                data: {}
+            })
+        }
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Issue Retrived Successfully",
+            data: result.rows
+        })
+    } catch (error: any) {
+         sendResponse(res, {
+                statusCode: 500,
+                success: false,
+                message: error.message,
+                error: error
+            })
+    }
+}
+
+
 export const issuecontroller = {
-    createIssue
+    createIssue,
+    getAllIssue
 }

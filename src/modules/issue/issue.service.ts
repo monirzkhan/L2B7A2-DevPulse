@@ -23,6 +23,14 @@ const createIssueIntoDB = async (payload: Iissue, reporter_id: number) => {
     return result;
 }
 
+const getAllIssueFromDB = async () => {
+    const result = await pool.query(`
+        SELECT * FROM issues;
+        `);
+    return result;
+}
+
 export const issueService = {
     createIssueIntoDB,
+    getAllIssueFromDB,
 }
