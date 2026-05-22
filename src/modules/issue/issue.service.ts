@@ -24,11 +24,28 @@ const createIssueIntoDB = async (payload: Iissue, reporter_id: number) => {
 }
 
 const getAllIssueFromDB = async () => {
-    const result = await pool.query(`
-        SELECT * FROM issues;
-        `);
-    return result;
-}
+    const issuesResult = await pool.query(`
+        SELECT * FROM issues`
+    );
+    const issues = issuesResult.rows;
+
+    const reporterIds = [...new Set(issues.map(i => i.reporter_id))];
+    // console.log(reporterIds);
+
+    const usersResult = await pool.query(
+        `SELECT id, name, role FROM users WHERE id = ANY($1)`,
+        [reporterIds]
+    );
+
+    const userMap = new Map(
+        usersResult.rows.map(user => [user.id, user])
+    );
+
+    return issues.map(issue => ({
+        ...issue,
+        reporter: userMap.get(issue.reporter_id) || null
+    }));
+};
 
 export const issueService = {
     createIssueIntoDB,
