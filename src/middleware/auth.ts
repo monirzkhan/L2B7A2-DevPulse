@@ -45,7 +45,6 @@ const auth = (...roles: Role[]) => {
                     statusCode: 401,
                     success: false,
                     message: "Unauthorized Access, This role can not access",
-
                 });
             }
 

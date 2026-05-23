@@ -24,55 +24,55 @@ const createIssueIntoDB = async (payload: Iissue, reporter_id: number) => {
 
 //getAllIssueFromDB
 const getAllIssueFromDB = async (query: any) => {
-  const { sort, type, status } = query;
+    const { sort, type, status } = query;
 
-  let sql = `SELECT * FROM issues WHERE 1=1`;
-  const values: any[] = [];
+    let sql = `SELECT * FROM issues WHERE 1=1`;
+    const values: any[] = [];
 
-  if (type) {
-    values.push(type);
-    sql += ` AND type = $${values.length}`;
-  }
+    if (type) {
+        values.push(type);
+        sql += ` AND type = $${values.length}`;
+    }
 
-  
-  if (status) {
-    values.push(status);
-    sql += ` AND status = $${values.length}`;
-  }
 
-  if (sort === "oldest") {
-    sql += ` ORDER BY created_at ASC`;
-  } else {
-    sql += ` ORDER BY created_at DESC`;
-  }
+    if (status) {
+        values.push(status);
+        sql += ` AND status = $${values.length}`;
+    }
 
-  //get issues
-  const issuesResult = await pool.query(sql, values);
-  const issues = issuesResult.rows;
+    if (sort === "oldest") {
+        sql += ` ORDER BY created_at ASC`;
+    } else {
+        sql += ` ORDER BY created_at DESC`;
+    }
 
-  if (issues.length === 0) {
-    return [];
-  }
+    //get issues
+    const issuesResult = await pool.query(sql, values);
+    const issues = issuesResult.rows;
 
-  const reporterIds = [...new Set(issues.map(i => i.reporter_id))];
-  //console.log(reporterIds);
+    if (issues.length === 0) {
+        return [];
+    }
 
-  
-  const usersResult = await pool.query(
-    `SELECT id, name, role FROM users WHERE id = ANY($1)`,
-    [reporterIds]
-  );
+    const reporterIds = [...new Set(issues.map(i => i.reporter_id))];
+    //console.log(reporterIds);
 
-  
-  const userMap = new Map(
-    usersResult.rows.map(user => [user.id, user])
-  );
 
-  
-  return issues.map(issue => ({
-    ...issue,
-    reporter: userMap.get(issue.reporter_id) || null
-  }));
+    const usersResult = await pool.query(
+        `SELECT id, name, role FROM users WHERE id = ANY($1)`,
+        [reporterIds]
+    );
+
+
+    const userMap = new Map(
+        usersResult.rows.map(user => [user.id, user])
+    );
+
+
+    return issues.map(issue => ({
+        ...issue,
+        reporter: userMap.get(issue.reporter_id) || null
+    }));
 };
 
 //getSingleIssuefromDB
@@ -90,7 +90,7 @@ const getSingleIssuefromDB = async (id: number) => {
     );
 
     const reporter = userResult.rows[0] || null;
-   // console.log(reporter);
+    // console.log(reporter);
 
     return {
         ...issue,
@@ -98,8 +98,61 @@ const getSingleIssuefromDB = async (id: number) => {
     };
 }
 
+const updateIssueIntoDB = async (id: number, payload: Iissue, user: any) => {
+
+    const issueResult = await pool.query(
+        `SELECT * FROM issues WHERE id = $1`,
+        [id]
+    );
+
+    const issue = issueResult.rows[0];
+    // console.log(user);
+
+    if (!issue) {
+        throw new Error("Issue not found");
+    }
+
+    // 2. role-based authorization
+
+    const isMaintainer = user.role === 'maintainer';
+    const isOwner = issue.reporter_id === user.id;
+    const isOpen = issue.status === "open";
+
+    if (!isMaintainer) {
+        //console.log("admin",isMaintainer)
+
+        if (!isOwner) {
+            //console.log('owner', isOwner);
+            throw new Error(
+                "You can update only your own issue"
+            );
+        }
+        if (!isOpen) {
+            throw new Error(
+                "You can update only open issues"
+            );
+        }
+    }
+
+    const { title, description, type, status } = payload;
+    const result = await pool.query(`
+        UPDATE issues 
+        SET title=COALESCE($1, title), 
+        description=COALESCE($2, title), 
+        type=COALESCE($3, type),
+        status=COALESCE($4, status)
+
+        WHERE id=$5 RETURNING *
+        
+        `, [title, description, type,status, id],
+    )
+    // console.log("from updated page", result)
+    return result;
+}
+
 export const issueService = {
     createIssueIntoDB,
     getAllIssueFromDB,
-    getSingleIssuefromDB
+    getSingleIssuefromDB,
+    updateIssueIntoDB
 }

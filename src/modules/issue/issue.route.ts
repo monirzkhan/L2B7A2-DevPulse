@@ -8,4 +8,7 @@ const router=Router();
 router.post("", auth(USER_ROLE.maintainer, USER_ROLE.contributor), issuecontroller.createIssue)
 router.get("", issuecontroller.getAllIssue)
 router.get("/:id", issuecontroller.getSingleIssue)
+router.patch("/:id", auth(USER_ROLE.maintainer, USER_ROLE.contributor),issuecontroller.updateIssue)
+
+
 export const issueRoute=router;

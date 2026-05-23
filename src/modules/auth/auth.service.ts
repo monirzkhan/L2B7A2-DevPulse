@@ -13,7 +13,7 @@ const loginIntoDB = async (payload: Iuser) => {
         
         `, [email],)
     if (userData.rows.length === 0) {
-        throw new Error("Invalid yy Credentials")
+        throw new Error("Invalid Credentials")
     }
     const user = userData.rows[0];
     
@@ -21,14 +21,14 @@ const loginIntoDB = async (payload: Iuser) => {
     // console.log(userData.rows[0])
     const matchPassword = await bcrypt.compare(password, user.password)
     if (!matchPassword) {
-        throw new Error("Invalid xx Credentials")
+        throw new Error("Invalid Credentials")
     }
 
     //Token Generation
     const jwtPayload = {
         name: user.name,
         id: user.id,
-        is_active: user.is_active,
+        role:user.role,
         email: user.email
     }
 
