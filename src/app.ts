@@ -1,4 +1,5 @@
 import express, { type Application, type Request, type Response } from 'express'
+import cors from 'cors'
 import { userRoute } from './modules/user/user.route';
 import { authRoute } from './modules/auth/auth.route';
 import { issueRoute } from './modules/issue/issue.route';
@@ -7,6 +8,7 @@ import { issueRoute } from './modules/issue/issue.route';
 const app: Application = express();
 
 app.use(express.json())
+app.use(cors())
 
 app.use('/api/auth/signup',userRoute)
 app.use('/api/auth/login',authRoute)
