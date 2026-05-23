@@ -11,7 +11,7 @@ const auth = (...roles: Role[]) => {
         //console.log("Controller", roles)
         try {
             const token = (req.headers.authorization);
-            console.log(token);
+            //console.log(token);
             if (!token) {
                return sendResponse(res, {
                     statusCode: 401,
@@ -27,7 +27,7 @@ const auth = (...roles: Role[]) => {
             const userData = await pool.query(`
             SELECT * from users WHERE email=$1
             `, [decoded.email],)
-            console.log(userData.rows[0])
+            //console.log(userData.rows[0])
 
             if (userData.rows.length === 0) {
                     return sendResponse(res, {

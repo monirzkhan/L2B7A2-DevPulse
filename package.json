@@ -7,7 +7,7 @@
     "start": "node dist/server.js",
     "dev": "NODE_OPTIONS=\"--no-network-family-autoselection\" tsx watch ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsup"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +30,8 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.21.0",
-    "pg-pool": "^3.14.0"
+    "pg-pool": "^3.14.0",
+    "tsup": "^8.5.1",
+    "vercel": "^50.41.0"
   }
 }

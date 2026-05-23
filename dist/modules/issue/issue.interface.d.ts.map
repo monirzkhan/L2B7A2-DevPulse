@@ -1,1 +1,0 @@
-{"version":3,"file":"issue.interface.d.ts","sourceRoot":"","sources":["../../../src/modules/issue/issue.interface.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,MAAM;IACnB,KAAK,EAAE,MAAM,CAAC;IACd,WAAW,EAAE,MAAM,CAAC;IACpB,IAAI,EAAE,KAAK,GAAG,iBAAiB,CAAC;IAChC,MAAM,EAAE,MAAM,CAAA;CAEjB"}
