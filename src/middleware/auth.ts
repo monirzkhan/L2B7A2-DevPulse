@@ -1,8 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
-
-
-import { nextTick } from "node:process";
 import { pool } from "../db";
 import config from "../config";
 import sendResponse from "../utility/sendResponse";
@@ -11,9 +8,8 @@ import type { Role } from "../types";
 
 const auth = (...roles: Role[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        console.log("Controller", roles)
+        //console.log("Controller", roles)
         try {
-
             const token = (req.headers.authorization);
             console.log(token);
             if (!token) {
@@ -47,7 +43,7 @@ const auth = (...roles: Role[]) => {
                     message: "Unauthorized Access, This role can not access",
                 });
             }
-
+            
             req.user = decoded;
             next()
         }

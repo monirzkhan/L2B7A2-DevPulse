@@ -6,7 +6,6 @@ success:boolean,
 message: string,
 data?: T,
 error?:any
-
 }
 
 const sendResponse = <T>(res: Response, data: Tresponse<T>) => {

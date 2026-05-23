@@ -16,7 +16,7 @@ const loginIntoDB = async (payload: Iuser) => {
         throw new Error("Invalid Credentials")
     }
     const user = userData.rows[0];
-    
+
 
     // console.log(userData.rows[0])
     const matchPassword = await bcrypt.compare(password, user.password)
@@ -28,20 +28,19 @@ const loginIntoDB = async (payload: Iuser) => {
     const jwtPayload = {
         name: user.name,
         id: user.id,
-        role:user.role,
+        role: user.role,
         email: user.email
     }
 
-    const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, {
+    const token = jwt.sign(jwtPayload, config.jwt_secret as string, {
         expiresIn: "1d"
     })
-    const refreshToken = jwt.sign(jwtPayload, config.jwt_refresh_secret as string, {
-        expiresIn: "10d"
-    })
+    // const refreshToken = jwt.sign(jwtPayload, config.jwt_refresh_secret as string, {
+    //     expiresIn: "10d"
+    // })
 
     delete user.password
-    return { accessToken, refreshToken,user };
-
+    return { token, user };
 }
 
 export const authService = {

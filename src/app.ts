@@ -3,6 +3,7 @@ import cors from 'cors'
 import { userRoute } from './modules/user/user.route';
 import { authRoute } from './modules/auth/auth.route';
 import { issueRoute } from './modules/issue/issue.route';
+import { globalErrohandler } from './middleware/globalErrorHandler';
 
 
 const app: Application = express();
@@ -22,5 +23,8 @@ app.get('/', (req: Request, res: Response) => {
     })
 
 })
+
+// Global Error Handling Middleware
+app.use(globalErrohandler);
 
 export default app;
