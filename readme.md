@@ -137,8 +137,10 @@ src/
 
 ---
 ### 👨‍💻 Author
-**Md Moniruzzman**
+**Md. Moniruzzaman**
+*e-mail: ceo@touchandgreet.com*
+*Student: Level-2, Batch-7*
 
-*DevPulse Backend Team*
+*Programming Hero*
 
 *Built with Node.js + TypeScript + PostgreSQL*
