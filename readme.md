@@ -83,20 +83,25 @@ git clone https://github.com/monirzkhan/L2B7A2-DevPulse.git
 
 ### 📡 API Endpoints
 ## 🔐 Auth Routes
-Method	Endpoint	        Description
-POST	/api/auth/signup	Register user
-POST	/api/auth/login	    Login user
+| Method | Endpoint | Description |
+|--------|------|-------------|
+| POST | /api/auth/signup | Register user |
+| POST | /api/auth/login | Login user|
+		    
 
 ---
 
 
 ### 🐞 Issue Routes
-Method	    Endpoint	        Description
-POST	    /api/issues	        Create issue
-GET         /api/issues	        Get all issues
-GET	        /api/issues/:id	    Get issue by ID
-PATCH	    /api/issues/:id	    Update issue
-DELETE	    /api/issues/:id	    Delete issue
+
+| Method | Endpoint | Description |
+|--------|------|-------------|
+| POST | /api/issues	 | Create issue|
+| GET | /api/issues	 | Get All Issues|
+| GET | /api/issues/:id | Get issue by ID|
+| PATCH | /api/issues/:id | Update Issue|
+| DELETE | /api/issues/:id | Delete Issue|
+		    
 
 ---
 ### 🔐 Authentication Flow
@@ -113,24 +118,27 @@ Authorization: Bearer <token>
 ```
 ---
 📁 Project Structure
+```bash
 src/
 │
-├── config/
-├── db/
-├── middleware/
-├── modules/
-│   ├── auth/
-│   ├── user/
-│   ├── issue/
+├── config/        # Environment & configuration files
+├── db/            # Database connection & pool setup
+├── middleware/    # Authentication & request middlewares
+├── modules/       # Feature-based modules
+│   ├── auth/      # Authentication (login, register, JWT)
+│   ├── user/      # User management
+│   └── issue/     # Issue tracking system
 │
-│
-├── utils/
-├── app.ts
-└── server.ts
+├── utils/         # Helper functions & utilities
+├── app.ts         # Express app setup
+└── server.ts      # Server entry point
 
+```
 
 ---
 ### 👨‍💻 Author
 **Md Moniruzzman**
+
 *DevPulse Backend Team*
+
 *Built with Node.js + TypeScript + PostgreSQL*
