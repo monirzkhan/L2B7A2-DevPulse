@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { issueService } from "./issue.service";
 import sendResponse from "../../utility/sendResponse";
+import { userService } from "../user/user.service";
 
 const createIssue = async (req: Request, res: Response) => {
     console.log(req.body);
@@ -45,21 +46,54 @@ const getAllIssue = async (req: Request, res: Response) => {
         sendResponse(res, {
             statusCode: 200,
             success: true,
-            message: "Issue Retrived Successfully",
+            message: "Issues Retrieved Successfully",
             data: result
         })
     } catch (error: any) {
-         sendResponse(res, {
-                statusCode: 500,
-                success: false,
-                message: error.message,
-                error: error
-            })
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            error: error
+        })
     }
 }
 
+const getSingleIssue = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    try {
+        const result = await issueService.getSingleIssuefromDB(id)
+        console.log(result);
+
+        if (!result) {
+          sendResponse(res, {
+                statusCode: 404,
+                success: false,
+                message: "Issue not found",
+                data: {}
+            })
+        }
+        
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Issues Retrieved Successfully",
+            data: result
+        })
+    } catch (error: any) {
+          sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            error: error
+        })
+
+    }
+
+}
 
 export const issuecontroller = {
     createIssue,
-    getAllIssue
+    getAllIssue,
+    getSingleIssue
 }
