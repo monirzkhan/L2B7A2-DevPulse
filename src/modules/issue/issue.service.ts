@@ -22,30 +22,60 @@ const createIssueIntoDB = async (payload: Iissue, reporter_id: number) => {
     return result;
 }
 
-const getAllIssueFromDB = async () => {
-    const issuesResult = await pool.query(`
-        SELECT * FROM issues`
-    );
-    const issues = issuesResult.rows;
+//getAllIssueFromDB
+const getAllIssueFromDB = async (query: any) => {
+  const { sort, type, status } = query;
 
-    const reporterIds = [...new Set(issues.map(i => i.reporter_id))];
-    // console.log(reporterIds);
+  let sql = `SELECT * FROM issues WHERE 1=1`;
+  const values: any[] = [];
 
-    const usersResult = await pool.query(
-        `SELECT id, name, role FROM users WHERE id = ANY($1)`,
-        [reporterIds]
-    );
+  if (type) {
+    values.push(type);
+    sql += ` AND type = $${values.length}`;
+  }
 
-    const userMap = new Map(
-        usersResult.rows.map(user => [user.id, user])
-    );
+  
+  if (status) {
+    values.push(status);
+    sql += ` AND status = $${values.length}`;
+  }
 
-    return issues.map(issue => ({
-        ...issue,
-        reporter: userMap.get(issue.reporter_id) || null
-    }));
+  if (sort === "oldest") {
+    sql += ` ORDER BY created_at ASC`;
+  } else {
+    sql += ` ORDER BY created_at DESC`;
+  }
+
+  //get issues
+  const issuesResult = await pool.query(sql, values);
+  const issues = issuesResult.rows;
+
+  if (issues.length === 0) {
+    return [];
+  }
+
+  const reporterIds = [...new Set(issues.map(i => i.reporter_id))];
+  //console.log(reporterIds);
+
+  
+  const usersResult = await pool.query(
+    `SELECT id, name, role FROM users WHERE id = ANY($1)`,
+    [reporterIds]
+  );
+
+  
+  const userMap = new Map(
+    usersResult.rows.map(user => [user.id, user])
+  );
+
+  
+  return issues.map(issue => ({
+    ...issue,
+    reporter: userMap.get(issue.reporter_id) || null
+  }));
 };
 
+//getSingleIssuefromDB
 const getSingleIssuefromDB = async (id: number) => {
     const issueResult = await pool.query(`
         SELECT * FROM issues WHERE id=$1
@@ -60,7 +90,7 @@ const getSingleIssuefromDB = async (id: number) => {
     );
 
     const reporter = userResult.rows[0] || null;
-    console.log(reporter);
+   // console.log(reporter);
 
     return {
         ...issue,

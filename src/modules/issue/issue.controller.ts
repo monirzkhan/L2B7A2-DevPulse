@@ -14,14 +14,14 @@ const createIssue = async (req: Request, res: Response) => {
 
         const result = await issueService.createIssueIntoDB(req.body, reporter_id);
 
-        sendResponse(res, {
+        return sendResponse(res, {
             statusCode: 201,
             success: true,
             message: "Issue registered successfully",
             data: result.rows[0],
         });
     } catch (error: any) {
-        sendResponse(res, {
+        return sendResponse(res, {
             statusCode: 500,
             success: false,
             message: error.message,
@@ -33,24 +33,24 @@ const createIssue = async (req: Request, res: Response) => {
 const getAllIssue = async (req: Request, res: Response) => {
 
     try {
-        const result = await issueService.getAllIssueFromDB()
+        const result = await issueService.getAllIssueFromDB(req.query)
 
         if (result.length === 0) {
-            sendResponse(res, {
+            return sendResponse(res, {
                 statusCode: 404,
                 success: false,
                 message: "User not found",
                 data: {}
             })
         }
-        sendResponse(res, {
+        return sendResponse(res, {
             statusCode: 200,
             success: true,
             message: "Issues Retrieved Successfully",
             data: result
         })
     } catch (error: any) {
-        sendResponse(res, {
+        return sendResponse(res, {
             statusCode: 500,
             success: false,
             message: error.message,
@@ -66,22 +66,22 @@ const getSingleIssue = async (req: Request, res: Response) => {
         console.log(result);
 
         if (!result) {
-          sendResponse(res, {
+          return sendResponse(res, {
                 statusCode: 404,
                 success: false,
                 message: "Issue not found",
                 data: {}
             })
         }
-        
-        sendResponse(res, {
+
+        return sendResponse(res, {
             statusCode: 200,
             success: true,
             message: "Issues Retrieved Successfully",
             data: result
         })
     } catch (error: any) {
-          sendResponse(res, {
+        return sendResponse(res, {
             statusCode: 500,
             success: false,
             message: error.message,
