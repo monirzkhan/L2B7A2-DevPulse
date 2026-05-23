@@ -4,7 +4,7 @@ import type { Iissue } from "./issue.interface";
 const createIssueIntoDB = async (payload: Iissue, reporter_id: number) => {
     //console.log(payload);
     const { title, description, type } = payload;
-    console.log("reporter ID", reporter_id);
+    //console.log("reporter ID", reporter_id);
 
     const user = await pool.query(`
         SELECT * FROM users WHERE id=$1
@@ -12,13 +12,14 @@ const createIssueIntoDB = async (payload: Iissue, reporter_id: number) => {
     );
 
     if (user.rows.length === 0) {
-        throw new Error("User no no Exist!!")
+        throw new Error("User no Exist!!")
     }
     const result = await pool.query(`
         INSERT INTO issues(title, description, type, status, reporter_id) 
         VALUES($1, $2, $3, $4, $5) RETURNING *
         `, [title, description, type, 'open', reporter_id],)
-    console.log('After Database Creation', result.rows);
+
+    //console.log('After Database Creation', result.rows);
     return result;
 }
 
@@ -57,12 +58,10 @@ const getAllIssueFromDB = async (query: any) => {
     const reporterIds = [...new Set(issues.map(i => i.reporter_id))];
     //console.log(reporterIds);
 
-
     const usersResult = await pool.query(
         `SELECT id, name, role FROM users WHERE id = ANY($1)`,
         [reporterIds]
     );
-
 
     const userMap = new Map(
         usersResult.rows.map(user => [user.id, user])
@@ -129,7 +128,7 @@ const updateIssueIntoDB = async (id: number, payload: Iissue, user: any) => {
         }
         if (!isOpen) {
             throw new Error(
-                "You can update only open issues"
+                "You can update only 'open' issues"
             );
         }
     }

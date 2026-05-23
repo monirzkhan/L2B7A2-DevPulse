@@ -4,12 +4,11 @@ import sendResponse from "../../utility/sendResponse";
 import { userService } from "../user/user.service";
 
 const createIssue = async (req: Request, res: Response) => {
-    console.log(req.body);
+   // console.log(req.body);
     try {
-
         const user = req.user;
 
-        // reporter_id from token
+        // reporter_id from jwttoken
         const reporter_id = user.id;
 
         const result = await issueService.createIssueIntoDB(req.body, reporter_id);

@@ -17,7 +17,7 @@ app.use('/api/issues', issueRoute)
 
 app.get('/', (req: Request, res: Response) => {
     res.status(200).json({
-        name: "Welcome to DevPulse v-2",
+        name: "Welcome to DevPulse",
         email: "devpulse@gmail.com",
         author: "Md Moniruzzaman"
     })
